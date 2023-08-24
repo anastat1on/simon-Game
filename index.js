@@ -101,6 +101,8 @@ function compareUserSelectedBlock(){
     //     storeUserSelectedBlocks.push(clickedElementByUser)
     // }
 
+    
+
  
    //storeRandomBlockContainer.push(grabBlock)
 
