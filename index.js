@@ -2,9 +2,8 @@ let clickedElementByUser
 let grabBlock
 const arrayOfId = ['green', 'yellow', 'red', 'blue']
 
+
 let levelCount = 0
-
-
 
 // container for random and selected blocks
 let storeRandomBlockContainer = [] 
@@ -20,15 +19,12 @@ let storeUserSelectedBlocks = []
             userPlay()
     })
 
-    
-
 // selecting random block, adding animation for blinking and sound
 function randomSelectBlock(){
-
     levelCount = levelCount + 1
 
     document.getElementById('level-title').innerHTML = "Level " + levelCount
-
+  
     // selecting random block ID 
 
     const randomNumber = Math.floor(Math.random() * 4)
@@ -39,7 +35,7 @@ function randomSelectBlock(){
     playSelectedBlockSound(grabBlock)
 
     $("#"+grabBlock).fadeOut(100).fadeIn(100);
-
+  
     storeRandomBlockContainer.push(grabBlock)
 }
 
@@ -50,7 +46,6 @@ function playSelectedBlockSound(block){
     const audioElement = new Audio(`/sounds/${block}.mp3`);
     audioElement.play() 
 }
-
 
 function userClickedBlock(event) {
   
@@ -129,4 +124,3 @@ function userLost() {
 
     levelCount = 0
 }
-
