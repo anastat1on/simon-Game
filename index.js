@@ -2,45 +2,32 @@ let clickedElementByUser
 let grabBlock
 const arrayOfId = ['green', 'yellow', 'red', 'blue']
 
-//let newArrayUser = []
+let levelCount = 0
+
+
 
 // container for random and selected blocks
 let storeRandomBlockContainer = [] 
 let storeUserSelectedBlocks = []
 
-console.log("where is undefined? " + storeUserSelectedBlocks)
 // Press any key to start
 
     document.querySelector('body').addEventListener('keypress',(event) =>{
-        if(event.key === "a" || event.key === "A"){
-            
+        if(event.key === "a" || event.key === "A"){   
             randomSelectBlock()
-
-           
-            userClickedBlock()
-            //userClickedBlock()
-            // if(storeUserSelectedBlocks.length > 0){
-            //     storeUserSelectedBlocks.push(clickedElementByUser)
-    
-            // }
-
-            const countMe = storeUserSelectedBlocks.length
-            console.log(countMe)
-            //compareUserSelectedBlock()
             
-            
-          
-            //userClickedBlock()
-            
-            //compareUserSelectedBlock()
-           
-        }
-       
-      
+            }
+            userPlay()
     })
+
+    
 
 // selecting random block, adding animation for blinking and sound
 function randomSelectBlock(){
+
+    levelCount = levelCount + 1
+
+    document.getElementById('level-title').innerHTML = "Level " + levelCount
 
     // selecting random block ID 
 
@@ -52,6 +39,7 @@ function randomSelectBlock(){
     playSelectedBlockSound(grabBlock)
 
     $("#"+grabBlock).fadeOut(100).fadeIn(100);
+
     storeRandomBlockContainer.push(grabBlock)
 }
 
@@ -64,97 +52,81 @@ function playSelectedBlockSound(block){
 }
 
 
-function userClickedBlock() {
-    let btnSelector = document.querySelectorAll('.btn') //grabbing all elements with same class
+function userClickedBlock(event) {
   
-    // going though each element in collection and add Event in each of them   
-   btnSelector.forEach((el) => {
- 
-     el.addEventListener('click', (event) => {
- 
-        clickedElementByUser =  event.target.id // grabbing id from block which was clicked by user
-        
-        el.classList.add("pressed") // adding and removing css class when user click the block
-        setTimeout(function() {
-            el.classList.remove("pressed",1000)
-        })
-            
-        playSelectedBlockSound(clickedElementByUser) // adding sounds to clicked block
-
-        })
-        
-    })
-    storeUserSelectedBlocks.push(clickedElementByUser)
-    console.log()
+    // Get the clicked button element
+    clickedElementByUser = event.target.id;
     
-    //compareUserSelectedBlock()
- }
-  
-
-
-function compareUserSelectedBlock(){
-
-    let newArrayUser = []
-
-    // if(storeUserSelectedBlocks[0] == 'undefined'){
-    //     storeUserSelectedBlocks.pop()
-    //     storeUserSelectedBlocks.push(clickedElementByUser)
-    // }
-
+    // Add the "pressed" class to the clicked button
+     event.target.classList.add("pressed");
     
-
- 
-   //storeRandomBlockContainer.push(grabBlock)
-
-    //storeRandomBlockContainer.push(grabBlock)
+    // Remove the "pressed" class after a delay
+    setTimeout(function() {
+        event.target.classList.remove("pressed");
+    }, 100);
     
-    // let random_block
-    // let user_block
+    // Play sound associated with the clicked block
+    playSelectedBlockSound(clickedElementByUser);
+    
+     // Store the clicked block's ID in the array
+    storeUserSelectedBlocks.push(clickedElementByUser);
 
-    console.log("random block:  " + storeRandomBlockContainer)
-    console.log(storeUserSelectedBlocks)
+    // Compare random and selected blocks
+    compareUserSelectedBlock(storeRandomBlockContainer,storeUserSelectedBlocks)
 
-    if(storeRandomBlockContainer ===  storeUserSelectedBlocks ){
-        console.log("Here we gooooo")
-        // storeUserSelectedBlocks = []
-        
-        randomSelectBlock()
-
-        // while (storeRandomBlockContainer.length > newArrayUser.length){
-        //     userClickedBlock()
-        //     newArrayUser.push(clickedElementByUser)
-        //     for (let i=0; i < storeRandomBlockContainer.length; i++){
-        //         // random_block = storeRandomBlockContainer[i]
-        //         // user_block = storeUserSelectedBlocks[i]
-                
-        //         if(storeRandomBlockContainer[i] === newArrayUser[i+1]){
-                   
-        //             console.log("Winner")
-                
-        //         }
-        //         else{
-        //             console.log('Loooozer')
-        //        }
-        //  }
-
-        // for (let i=0; i < storeRandomBlockContainer.length; i++){
-        //     // random_block = storeRandomBlockContainer[i]
-        //     // user_block = storeUserSelectedBlocks[i]
-            
-        //     if(storeRandomBlockContainer[i] === storeUserSelectedBlocks[i+1]){
-               
-        //         console.log("Winner")
-            
-        //     //}
-        //     // else{
-        //     //     console.log('Loooozer')
-        //     }
-
-       // }
     }
-}
     
+function userPlay(){
+
+    // Grab all elements with the class "btn" and add click event listeners
+    let btnSelector = document.querySelectorAll('.btn');
+    btnSelector.forEach((el) => {
+        el.addEventListener('click', userClickedBlock);
+    });
+
+}
 
 
+function compareUserSelectedBlock(random_block,user_block){
+ 
+    // console.log("random block:  " + storeRandomBlockContainer)
+    // console.log(storeUserSelectedBlocks)
 
+    
+    let executeFunction1 = true;
+
+    console.log("random choise: " + grabBlock)
+    console.log("my choise: " + clickedElementByUser)
+
+    if(executeFunction1 && grabBlock === clickedElementByUser){
+        setTimeout(function() {
+            randomSelectBlock()
+            executeFunction1 = false
+            }, 1000);
+        }
+       
+    else{
+        userLost()
+        storeRandomBlockContainer = [] 
+        storeUserSelectedBlocks = []
+    }    
+} 
+
+
+function userLost() {
+
+    document.getElementById('level-title').innerHTML = 'Game Over, Press "A" Key to Restart'
+    
+    playSelectedBlockSound('wrong')
+    
+    let body = document.querySelector("body")
+    
+    body.classList.add('game-over')
+    
+    setTimeout(function() {
+        body.classList.remove('game-over');
+    }, 100);
+
+    levelCount = 0
+}
 
