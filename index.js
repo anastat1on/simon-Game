@@ -2,7 +2,7 @@ let clickedElementByUser
 let grabBlock
 const arrayOfId = ['green', 'yellow', 'red', 'blue']
 
-
+let itemIndex = 0 
 let levelCount = 0
 
 // container for random and selected blocks
@@ -14,7 +14,6 @@ let storeUserSelectedBlocks = []
     document.querySelector('body').addEventListener('keypress',(event) =>{
         if(event.key === "a" || event.key === "A"){   
             randomSelectBlock()
-            
             }
             userPlay()
     })
@@ -34,8 +33,10 @@ function randomSelectBlock(){
 
     playSelectedBlockSound(grabBlock)
 
+    //triggering blink
     $("#"+grabBlock).fadeOut(100).fadeIn(100);
-  
+    
+    //add random block to array
     storeRandomBlockContainer.push(grabBlock)
 }
 
@@ -67,6 +68,7 @@ function userClickedBlock(event) {
     storeUserSelectedBlocks.push(clickedElementByUser);
 
     // Compare random and selected blocks
+   
     compareUserSelectedBlock(storeRandomBlockContainer,storeUserSelectedBlocks)
 
     }
@@ -81,34 +83,54 @@ function userPlay(){
 
 }
 
-
 function compareUserSelectedBlock(random_block,user_block){
- 
-    // console.log("random block:  " + storeRandomBlockContainer)
-    // console.log(storeUserSelectedBlocks)
-
-    
+   
     let executeFunction1 = true;
+ 
+    // set as flag so it can repeat function one by one
+    if(executeFunction1 ){
+    
+        // checking if amount of clicked blocks are equal for both and make sure last items in array are matching, then function will be executed
+        if(storeUserSelectedBlocks.length === storeRandomBlockContainer.length 
+            && storeUserSelectedBlocks[itemIndex] === storeRandomBlockContainer[itemIndex] ){
 
-    console.log("random choise: " + grabBlock)
-    console.log("my choise: " + clickedElementByUser)
+        // set timeout so user can see what block was highlighted 
+            setTimeout(function() {
 
-    if(executeFunction1 && grabBlock === clickedElementByUser){
-        setTimeout(function() {
-            randomSelectBlock()
-            executeFunction1 = false
-            }, 1000);
+                randomSelectBlock()
+                // set flag to false so function will executed 1 time and move to next step
+                executeFunction1 = false
+
+                // set index to 0, so when user will be clicking it can start compared from begining of array
+                itemIndex = 0
+
+                // set array to empty state so user can fill out array from beginig and compare every value with array of random blocks
+                storeUserSelectedBlocks = []
+                }, 1000);
+            }
+            
+            // user will be clicking until array lenght will match the random, and every value will be compared
+        else if(storeUserSelectedBlocks.length <= storeRandomBlockContainer.length){
+
+            // checking elements in array one by one aftre user click
+            if(storeUserSelectedBlocks[itemIndex] === storeRandomBlockContainer[itemIndex]){
+                itemIndex ++
+            }
+
+            // in case wrong item was clicked - triger the lost function and start from begining 
+            else if(storeUserSelectedBlocks[itemIndex] != storeRandomBlockContainer[itemIndex]){
+                userLost()
+                storeRandomBlockContainer = [] 
+                storeUserSelectedBlocks = []
+               
+            }
+            
         }
-       
-    else{
-        userLost()
-        storeRandomBlockContainer = [] 
-        storeUserSelectedBlocks = []
-    }    
-} 
-
-
-function userLost() {
+    }
+    
+}
+// if user lost - set title, make wrong sound, change background like blinking animation and set level to 0
+function userLost(){
 
     document.getElementById('level-title').innerHTML = 'Game Over, Press "A" Key to Restart'
     
@@ -122,5 +144,5 @@ function userLost() {
         body.classList.remove('game-over');
     }, 100);
 
-    levelCount = 0
+    levelCount = 0;
 }
