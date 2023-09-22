@@ -44,7 +44,7 @@ function randomSelectBlock(){
 function playSelectedBlockSound(block){
 
     // grabbing block ID and paste as parameter for file 
-    const audioElement = new Audio(`/sounds/${block}.mp3`);
+    const audioElement = new Audio(`sounds/${block}.mp3`);
     audioElement.play() 
 }
 
